@@ -1,4 +1,4 @@
-package org.koin.error
+package co.zsmb.koinjs.error
 
 /**
  * Property is missing

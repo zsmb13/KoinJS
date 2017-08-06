@@ -1,4 +1,4 @@
-package org.koin.property
+package co.zsmb.koinjs.property
 
 /**
  * Gather all properties

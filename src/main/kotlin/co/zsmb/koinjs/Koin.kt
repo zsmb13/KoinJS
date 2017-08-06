@@ -1,11 +1,11 @@
-package org.koin
+package co.zsmb.koinjs
 
-import org.koin.bean.BeanRegistry
-import org.koin.dsl.context.Scope
-import org.koin.dsl.module.Module
-import org.koin.instance.InstanceResolver
-import org.koin.js.logger
-import org.koin.property.PropertyResolver
+import co.zsmb.koinjs.bean.BeanRegistry
+import co.zsmb.koinjs.dsl.context.Scope
+import co.zsmb.koinjs.dsl.module.Module
+import co.zsmb.koinjs.instance.InstanceResolver
+import co.zsmb.koinjs.js.logger
+import co.zsmb.koinjs.property.PropertyResolver
 
 /**
  * Koin Context Builder

@@ -1,4 +1,4 @@
-package org.koin.dsl.context
+package co.zsmb.koinjs.dsl.context
 
 import kotlin.reflect.KClass
 

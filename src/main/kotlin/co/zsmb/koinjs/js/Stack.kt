@@ -1,4 +1,4 @@
-package org.koin.js
+package co.zsmb.koinjs.js
 
 class Stack<T> {
 

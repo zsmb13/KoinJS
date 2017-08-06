@@ -1,14 +1,14 @@
-package org.koin
+package co.zsmb.koinjs
 
-import org.koin.bean.BeanRegistry
-import org.koin.dsl.context.Scope
-import org.koin.error.CyclicDependencyException
-import org.koin.error.InstanceNotFoundException
-import org.koin.error.MissingPropertyException
-import org.koin.instance.InstanceResolver
-import org.koin.js.Stack
-import org.koin.js.logger
-import org.koin.property.PropertyResolver
+import co.zsmb.koinjs.bean.BeanRegistry
+import co.zsmb.koinjs.dsl.context.Scope
+import co.zsmb.koinjs.error.CyclicDependencyException
+import co.zsmb.koinjs.error.InstanceNotFoundException
+import co.zsmb.koinjs.error.MissingPropertyException
+import co.zsmb.koinjs.instance.InstanceResolver
+import co.zsmb.koinjs.js.Stack
+import co.zsmb.koinjs.js.logger
+import co.zsmb.koinjs.property.PropertyResolver
 import kotlin.reflect.KClass
 
 /**

@@ -1,6 +1,6 @@
-package org.koin.property
+package co.zsmb.koinjs.property
 
-import org.koin.error.MissingPropertyException
+import co.zsmb.koinjs.error.MissingPropertyException
 
 /**
  * Resolve properties for a context

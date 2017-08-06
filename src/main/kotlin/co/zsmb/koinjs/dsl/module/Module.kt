@@ -1,7 +1,7 @@
-package org.koin.dsl.module
+package co.zsmb.koinjs.dsl.module
 
-import org.koin.KoinContext
-import org.koin.dsl.context.Context
+import co.zsmb.koinjs.KoinContext
+import co.zsmb.koinjs.dsl.context.Context
 
 
 /**

@@ -1,9 +1,9 @@
-package org.koin.dsl.context
+package co.zsmb.koinjs.dsl.context
 
-import org.koin.KoinContext
-import org.koin.bean.BeanDefinition
-import org.koin.error.InstanceNotFoundException
-import org.koin.error.MissingPropertyException
+import co.zsmb.koinjs.KoinContext
+import co.zsmb.koinjs.bean.BeanDefinition
+import co.zsmb.koinjs.error.InstanceNotFoundException
+import co.zsmb.koinjs.error.MissingPropertyException
 import kotlin.reflect.KClass
 
 /**

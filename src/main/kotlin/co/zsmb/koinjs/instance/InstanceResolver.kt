@@ -1,8 +1,8 @@
-package org.koin.instance
+package co.zsmb.koinjs.instance
 
-import org.koin.bean.BeanDefinition
-import org.koin.dsl.context.Scope
-import org.koin.js.logger
+import co.zsmb.koinjs.bean.BeanDefinition
+import co.zsmb.koinjs.dsl.context.Scope
+import co.zsmb.koinjs.js.logger
 import kotlin.reflect.KClass
 
 /**
