@@ -6,10 +6,12 @@ inline fun <reified T> logger(): Lazy<Logger> = lazy {
     Logger(name)
 }
 
-class Logger(val tag: String) {
+class Logger(val tag: String, var enabled: Boolean = false) {
 
     fun log(message: String) {
-        println("[$tag] $message")
+        if(enabled) {
+            println("[$tag] $message")
+        }
     }
 
 }
