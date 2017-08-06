@@ -8,5 +8,4 @@ classes/
 .DS_Store
 /build
 /captures
-
-
+gradle.properties
