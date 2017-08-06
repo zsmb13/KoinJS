@@ -55,6 +55,27 @@ class Koin {
     }
 
     /**
+     * load given module instances into current koin context
+     */
+    fun <T : Module> build(modules: List<T>): KoinContext {
+        logger.log("load module $modules ...")
+
+        val koinContext = KoinContext(beanRegistry, propertyResolver, instanceResolver)
+        modules.forEach {
+            it.koinContet = koinContext
+            val ctx = it.context()
+            val scope = ctx.contextScope
+            if (scope != null) {
+                logger.log("preparing scope $scope")
+                instanceResolver.createContext(scope)
+            }
+            ctx.provided.forEach { beanRegistry.declare<Any>(it) }
+        }
+
+        return koinContext
+    }
+
+    /**
      * load directly Koin context with no modules
      */
     fun build(): KoinContext = KoinContext(beanRegistry, propertyResolver, instanceResolver)
