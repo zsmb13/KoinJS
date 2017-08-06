@@ -3,7 +3,6 @@ package co.zsmb.koinjs.dsl.context
 import co.zsmb.koinjs.KoinContext
 import co.zsmb.koinjs.bean.BeanDefinition
 import co.zsmb.koinjs.error.InstanceNotFoundException
-import co.zsmb.koinjs.error.MissingPropertyException
 import kotlin.reflect.KClass
 
 /**
