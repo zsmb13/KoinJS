@@ -11,15 +11,70 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.jfrog.bintray" version "1.7.3"
+}
+
+def GROUP_ID = 'co.zsmb'
+def ARTIFACT_ID = 'koinjs'
+def VERSION = '0.1.0'
+
+group GROUP_ID
+version VERSION
+
 apply plugin: 'kotlin2js'
+apply plugin: 'maven-publish'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    // Kt
     compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
 }
 
 repositories {
     jcenter()
     mavenCentral()
+}
+
+task jarSources(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'source'
+}
+
+artifacts {
+    archives jarSources
+}
+
+def outDir = "${buildDir}/kotlin2js/main/"
+compileKotlin2Js.kotlinOptions.outputFile = outDir + "koinjs.js"
+
+bintray {
+    user = project.hasProperty('bintrayKey') ? project.property('bintrayUser') : System.getenv('bintrayUser')
+    key = project.hasProperty('bintrayKey') ? project.property('bintrayKey') : System.getenv('bintrayKey')
+    publications = ['mavenJava']
+
+    pkg {
+        repo = 'KoinJS'
+        name = 'KoinJS'
+
+        version {
+            name = VERSION
+            released = new Date()
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId GROUP_ID
+            artifactId ARTIFACT_ID
+            version VERSION
+
+            from components.java
+
+            artifact jarSources {
+                classifier = 'sources'
+            }
+        }
+    }
 }
