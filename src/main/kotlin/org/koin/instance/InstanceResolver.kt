@@ -2,7 +2,7 @@ package org.koin.instance
 
 import org.koin.bean.BeanDefinition
 import org.koin.dsl.context.Scope
-import java.util.logging.Logger
+import org.koin.js.logger
 import kotlin.reflect.KClass
 
 /**
@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
  */
 class InstanceResolver() {
 
-    val logger: Logger = Logger.getLogger(InstanceResolver::class.java.simpleName)
+    val logger by logger<InstanceResolver>()
 
     val all_context = HashMap<Scope, InstanceFactory>()
 
@@ -32,7 +32,7 @@ class InstanceResolver() {
     fun createContext(scope: Scope) {
         if (!all_context.containsKey(scope)) {
             all_context[scope] = InstanceFactory()
-            logger.info(">> Create scope $scope")
+            logger.log(">> Create scope $scope")
         }
     }
 }

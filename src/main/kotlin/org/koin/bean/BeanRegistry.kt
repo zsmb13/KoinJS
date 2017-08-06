@@ -1,6 +1,7 @@
 package org.koin.bean
 
 import org.koin.dsl.context.Scope
+import org.koin.js.logger
 import kotlin.reflect.KClass
 
 /**
@@ -8,9 +9,9 @@ import kotlin.reflect.KClass
  * gather definitions of beans & communicate with instance factory to handle instances
  * @author - Arnaud GIULIANI
  */
-class BeanRegistry() {
+class BeanRegistry {
 
-    val logger: java.util.logging.Logger = java.util.logging.Logger.getLogger(BeanRegistry::class.java.simpleName)
+    val logger by logger<BeanRegistry>()
 
     /*
         bean definitions
@@ -25,7 +26,7 @@ class BeanRegistry() {
      * @param clazz
      */
     inline fun <reified T : Any> declare(def: BeanDefinition<*>) {
-        logger.info(">> Declare bean definition $def")
+        logger.log(">> Declare bean definition $def")
 
         val found = search(def.clazz)
         if (found != null) {
@@ -44,7 +45,7 @@ class BeanRegistry() {
     inline fun <reified T : Any> declare(noinline function: () -> T, clazz: kotlin.reflect.KClass<*> = T::class, scope: Scope) {
         val def = BeanDefinition(function, clazz, scope)
 
-        logger.info(">> Declare bean definition $def")
+        logger.log(">> Declare bean definition $def")
 
         val found = search(clazz)
         if (found != null) {
@@ -73,7 +74,7 @@ class BeanRegistry() {
      * @param clazz Class
      */
     fun remove(vararg classes: KClass<*>) {
-        logger.warning("removeInstance $classes")
+        logger.log("removeInstance $classes")
         classes.map { search(it) }.forEach { definitions.remove(it) }
     }
 }

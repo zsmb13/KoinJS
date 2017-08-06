@@ -6,9 +6,9 @@ import org.koin.error.CyclicDependencyException
 import org.koin.error.InstanceNotFoundException
 import org.koin.error.MissingPropertyException
 import org.koin.instance.InstanceResolver
+import org.koin.js.Stack
+import org.koin.js.logger
 import org.koin.property.PropertyResolver
-import java.util.*
-import java.util.logging.Logger
 import kotlin.reflect.KClass
 
 /**
@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
  */
 class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: PropertyResolver, val instanceResolver: InstanceResolver) {
 
-    val logger: Logger = Logger.getLogger(KoinContext::class.java.simpleName)
+    val logger by logger<KoinContext>()
 
     /**
      * Retrieve a bean instance
@@ -43,7 +43,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      */
     inline fun <reified T> resolve(): T? {
         val clazz = T::class
-        logger.info("resolve $clazz :: $resolutionStack")
+        logger.log("resolve $clazz :: $resolutionStack")
 
         if (resolutionStack.contains(clazz)) {
             throw CyclicDependencyException("Cyclic dependency for $clazz")
@@ -63,7 +63,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * @param functional decleration
      */
     inline fun <reified T : Any> provide(noinline definition: () -> T) {
-        logger.finest("declare singleton $definition")
+        logger.log("declare singleton $definition")
         provideDefinition(definition, Scope.root())
     }
 
@@ -72,7 +72,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * @param functional decleration
      */
     inline fun <reified T : Any> provide(noinline definition: () -> T, scopeClass: KClass<*>) {
-        logger.finest("declare singleton $definition")
+        logger.log("declare singleton $definition")
         provideDefinition(definition, Scope(scopeClass))
     }
 
@@ -90,7 +90,7 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      */
     fun release(vararg scopeClasses: KClass<*>) {
         scopeClasses.forEach {
-            logger.warning("Clear instance $it ")
+            logger.log("Clear instance $it ")
             instanceResolver.getInstanceFactory(Scope(it)).clear()
         }
     }
@@ -99,14 +99,13 @@ class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: Property
      * Clear given Root instance
      */
     fun release() {
-        logger.warning("Clear instance ROOT")
+        logger.log("Clear instance ROOT")
         instanceResolver.getInstanceFactory(Scope.root()).clear()
     }
 
     /**
      * Retrieve a property
      */
-    @Throws(MissingPropertyException::class)
     inline fun <reified T> getProperty(key: String): T = getPropertyOrNull(key) ?: throw MissingPropertyException("Could not bind property $key")
 
     /**

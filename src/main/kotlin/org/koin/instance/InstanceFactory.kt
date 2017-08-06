@@ -2,8 +2,7 @@ package org.koin.instance
 
 import org.koin.bean.BeanDefinition
 import org.koin.dsl.context.Scope
-import java.util.concurrent.ConcurrentHashMap
-import java.util.logging.Logger
+import org.koin.js.logger
 import kotlin.reflect.KClass
 
 /**
@@ -13,9 +12,9 @@ import kotlin.reflect.KClass
 @Suppress("UNCHECKED_CAST")
 class InstanceFactory {
 
-    val logger: Logger = Logger.getLogger(InstanceFactory::class.java.simpleName)
+    val logger by logger<InstanceFactory>()
 
-    val instances = ConcurrentHashMap<KClass<*>, Any>()
+    val instances = mutableMapOf<KClass<*>, Any>()
 
     /**
      * Retrieve or create bean instance
@@ -35,7 +34,8 @@ class InstanceFactory {
         val existingClass = instances.keys.filter { it == clazz }.firstOrNull()
         if (existingClass != null) {
             return instances[existingClass] as? T
-        } else {
+        }
+        else {
             return null
         }
     }
@@ -44,17 +44,18 @@ class InstanceFactory {
      * create instance for given bean definition
      */
     private fun <T> createInstance(def: BeanDefinition<*>, clazz: KClass<*>, scope: Scope): T? {
-        logger.fine(">> Create instance : $def")
+        logger.log(">> Create instance : $def")
         if (def.scope == scope) {
             try {
                 val instance = def.definition.invoke() as Any
                 instances[clazz] = instance
                 return instance as T
             } catch(e: Exception) {
-                logger.warning("Couldn't get instance for $def due to error $e")
+                logger.log("Couldn't get instance for $def due to error $e")
                 return null
             }
-        } else return null
+        }
+        else return null
     }
 
     fun <T> resolveInstance(def: BeanDefinition<*>, scope: Scope): T? {

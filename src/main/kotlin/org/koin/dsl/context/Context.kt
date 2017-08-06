@@ -62,7 +62,6 @@ class Context(val koinContext: KoinContext) {
     /**
      * Retrieve a property
      */
-    @Throws(MissingPropertyException::class)
     inline fun <reified T> getProperty(key: String): T = koinContext.propertyResolver.getProperty(key)
 
     /**
