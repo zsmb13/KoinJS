@@ -1,0 +1,11 @@
+language: kotlin
+jdk: oraclejdk8
+
+before_install:
+  - chmod +x gradlew
+
+script:
+- ./gradlew clean build
+
+notifications:
+  email: false
