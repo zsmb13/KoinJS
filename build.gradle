@@ -18,7 +18,7 @@ plugins {
 
 def GROUP_ID = 'co.zsmb'
 def ARTIFACT_ID = 'koinjs'
-def VERSION = '0.1.1'
+def VERSION = '0.1.2'
 
 group GROUP_ID
 version VERSION
@@ -80,7 +80,7 @@ publishing {
 }
 
 [compileKotlin2Js, compileTestKotlin2Js]*.configure {
-    kotlinOptions.moduleKind = "commonjs"
+    kotlinOptions.moduleKind = "umd"
 }
 
 task populateNodeModules(type: Copy, dependsOn: compileKotlin2Js) {
