@@ -1,4 +1,4 @@
-# KoinJS
+# KoinJS  [![Build Status](https://travis-ci.org/zsmb13/KoinJS.svg?branch=master)](https://travis-ci.org/zsmb13/KoinJS)
 
 This is a fork of the [Ekito/koin](https://github.com/Ekito/koin) project that targets JavaScript. 
 
