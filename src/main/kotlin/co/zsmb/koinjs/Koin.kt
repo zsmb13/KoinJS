@@ -13,7 +13,7 @@ import co.zsmb.koinjs.property.PropertyResolver
  */
 class Koin {
 
-    val logger by logger<Koin>()
+    private val logger by logger<Koin>()
 
     val beanRegistry = BeanRegistry()
     val propertyResolver = PropertyResolver()

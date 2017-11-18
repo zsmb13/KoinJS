@@ -19,7 +19,8 @@ import kotlin.reflect.KClass
  */
 class KoinContext(val beanRegistry: BeanRegistry, val propertyResolver: PropertyResolver, val instanceResolver: InstanceResolver) {
 
-    val logger by logger<KoinContext>()
+    @PublishedApi
+    internal val logger by logger<KoinContext>()
 
     /**
      * Retrieve a bean instance

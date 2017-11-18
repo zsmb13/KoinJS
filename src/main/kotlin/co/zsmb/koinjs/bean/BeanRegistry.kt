@@ -11,7 +11,8 @@ import kotlin.reflect.KClass
  */
 class BeanRegistry {
 
-    val logger by logger<BeanRegistry>()
+    @PublishedApi
+    internal val logger by logger<BeanRegistry>()
 
     /*
         bean definitions

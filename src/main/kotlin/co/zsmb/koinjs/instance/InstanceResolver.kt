@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
  */
 class InstanceResolver() {
 
-    val logger by logger<InstanceResolver>()
+    private val logger by logger<InstanceResolver>()
 
     val all_context = HashMap<Scope, InstanceFactory>()
 

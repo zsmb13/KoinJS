@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 @Suppress("UNCHECKED_CAST")
 class InstanceFactory {
 
-    val logger by logger<InstanceFactory>()
+    private val logger by logger<InstanceFactory>()
 
     val instances = mutableMapOf<KClass<*>, Any>()
 
