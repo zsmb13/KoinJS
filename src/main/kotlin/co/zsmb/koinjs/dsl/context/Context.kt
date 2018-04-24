@@ -1,75 +1,103 @@
 package co.zsmb.koinjs.dsl.context
 
 import co.zsmb.koinjs.KoinContext
-import co.zsmb.koinjs.bean.BeanDefinition
-import co.zsmb.koinjs.error.InstanceNotFoundException
-import kotlin.reflect.KClass
+import co.zsmb.koinjs.core.bean.BeanDefinition
+import co.zsmb.koinjs.core.bean.Definition
+import co.zsmb.koinjs.core.parameter.Parameters
+import co.zsmb.koinjs.core.scope.Scope
 
 /**
  * Koin Context
  * Define dependencies & properties for actual context
+ *
  * @author - Arnaud GIULIANI
  */
-class Context(val koinContext: KoinContext) {
-
-    val provided = arrayListOf<BeanDefinition<*>>()
-
-    /*
-     * Declarative parts
-     */
+class Context(val name: String = Scope.ROOT, val koinContext: KoinContext) {
 
     /**
-     * Declared context scope
+     * bean definitions
      */
-    var contextScope: Scope? = null
+    val definitions = arrayListOf<BeanDefinition<*>>()
 
     /**
-     * declare a Context scope
+     * sub contexts
      */
-    fun scope(definition: () -> KClass<*>) {
-        contextScope = Scope(definition())
+    val subContexts = arrayListOf<Context>()
+
+    /**
+     * Create a sub context in actual context
+     * @param name
+     */
+    fun context(name: String, init: Context.() -> Unit): Context {
+        val newContext = Context(name, koinContext)
+        subContexts += newContext
+        return newContext.apply(init)
     }
 
     /**
-     * Provide a bean definition
+     * Provide a bean definition - default provider definition
+     * @param name
+     * @param isSingleton
      */
-    inline fun <reified T : Any> provide(noinline definition: () -> T): BeanDefinition<T> {
-        val beanDefinition = BeanDefinition(definition, T::class, contextScope ?: Scope.root())
-        provided += beanDefinition
+    @Deprecated("use `bean` (for singleton instances) or `factory` (for factory instances)")
+    inline fun <reified T : Any> provide(
+            name: String = "",
+            isSingleton: Boolean = true,
+            noinline definition: Definition<T>
+    ): BeanDefinition<T> {
+        val beanDefinition = BeanDefinition(name, T::class, isSingleton = isSingleton, definition = definition)
+        definitions += beanDefinition
         return beanDefinition
     }
 
-
-    /*
-     * Runtime resolutions
+    /**
+     * Provide a bean definition - alias to provide
+     * @param name
      */
+    inline fun <reified T : Any> bean(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> {
+        return provide(name, true, definition)
+    }
+
+    /**
+     * Provide a factory bean definition - factory provider
+     * (recreate instance each time)
+     *
+     * @param name
+     */
+    inline fun <reified T : Any> factory(name: String = "", noinline definition: Definition<T>): BeanDefinition<T> {
+        return provide(name, false, definition)
+    }
 
     /**
      * Resolve a component
+     * @param name : component name
      */
-    inline fun <reified T : Any> get(): T {
-        return getOrNull<T>() ?: throw InstanceNotFoundException("no bean instance for ${T::class}")
-    }
+    inline fun <reified T : Any> get(name: String? = null): T = if (name != null) koinContext.resolveByName(
+            name,
+            { emptyMap() }) else koinContext.resolveByClass({ emptyMap() })
 
     /**
-     * Safely resolve a component (can be null)
+     * Resolve a component
+     * @param name : component name
+     * @param parameters - dynamic parameters
      */
-    inline fun <reified T : Any> getOrNull(): T? {
-        return koinContext.resolve<T>()
-    }
+    inline fun <reified T : Any> get(name: String? = null, noinline parameters: Parameters): T =
+            if (name != null) koinContext.resolveByName(name, parameters) else koinContext.resolveByClass(parameters)
 
     /**
      * Retrieve a property
+     * @param key - property key
      */
     inline fun <reified T> getProperty(key: String): T = koinContext.propertyResolver.getProperty(key)
 
     /**
-     * Retrieve safely a property
+     * Retrieve a property
+     * @param key - property key
+     * @param defaultValue - default value
      */
-    inline fun <reified T> getPropertyOrNull(key: String): T? = koinContext.propertyResolver.getPropertyOrNull(key)
+    inline fun <reified T> getProperty(key: String, defaultValue: T) =
+            koinContext.propertyResolver.getProperty(key, defaultValue)
 
-    /**
-     * Set a property
-     */
-    fun setProperty(key: String, value: Any) = koinContext.propertyResolver.setProperty(key, value)
+    // String display
+    override fun toString(): String = "Context[$name]"
 }

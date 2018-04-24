@@ -1,7 +1,6 @@
 package co.zsmb.koinjs.error
 
 /**
- * Property is missing
- * @author - Arnaud GIULIANI
+ * Missing property error
  */
 class MissingPropertyException(msg: String) : Exception(msg)

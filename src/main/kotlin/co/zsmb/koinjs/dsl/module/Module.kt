@@ -1,25 +1,17 @@
 package co.zsmb.koinjs.dsl.module
 
 import co.zsmb.koinjs.KoinContext
+import co.zsmb.koinjs.core.scope.Scope
 import co.zsmb.koinjs.dsl.context.Context
+import co.zsmb.koinjs.standalone.StandAloneContext
 
 
 /**
- * Module class - Help define beans within actual context
- * @author - Arnaud GIULIANI
+ * Create Context
  */
-abstract class Module {
+fun applicationContext(init: Context.() -> Unit): Module = { Context(Scope.ROOT, StandAloneContext.koinContext as KoinContext).apply(init) }
 
-    lateinit var koinContext: KoinContext
-
-    /**
-     * module's context
-     */
-    abstract fun context(): Context
-
-    /**
-     * Create Context function
-     */
-    fun declareContext(init: Context.() -> Unit) = Context(koinContext).apply(init)
-
-}
+/**
+ * Module - function that gives a module
+ */
+typealias Module = () -> Context

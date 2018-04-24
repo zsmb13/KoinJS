@@ -1,82 +1,60 @@
 package co.zsmb.koinjs
 
-import co.zsmb.koinjs.bean.BeanRegistry
-import co.zsmb.koinjs.dsl.context.Scope
+import co.zsmb.koinjs.dsl.context.Context
 import co.zsmb.koinjs.dsl.module.Module
-import co.zsmb.koinjs.instance.InstanceResolver
-import co.zsmb.koinjs.js.logger
-import co.zsmb.koinjs.property.PropertyResolver
+import co.zsmb.koinjs.log.Logger
+import co.zsmb.koinjs.log.PrintLogger
 
 /**
  * Koin Context Builder
  * @author - Arnaud GIULIANI
  */
-class Koin {
-
-    private val logger by logger<Koin>()
-
-    val beanRegistry = BeanRegistry()
-    val propertyResolver = PropertyResolver()
-    val instanceResolver = InstanceResolver()
-
-    init {
-        logger.log("(-) Koin Started ! (-)")
-        instanceResolver.createContext(Scope.root())
-    }
+class Koin(val koinContext: KoinContext) {
+    val propertyResolver = koinContext.propertyResolver
+    val beanRegistry = koinContext.beanRegistry
 
     /**
      * Inject properties to context
      */
-    fun properties(props: Map<String, Any>): Koin {
-        logger.log("load properties $props ...")
-        propertyResolver.addAll(props)
+    fun bindAdditionalProperties(props: Map<String, Any>): Koin {
+        if (props.isNotEmpty()) {
+            propertyResolver.addAll(props)
+        }
         return this
     }
 
     /**
-     * load given module instances into current koin context
+     * load given list of module instances into current StandAlone koin context
      */
-    fun <T : Module> build(vararg modules: T): KoinContext {
-        logger.log("load module $modules ...")
-
-        val koinContext = KoinContext(beanRegistry, propertyResolver, instanceResolver)
-        modules.forEach {
-            it.koinContext = koinContext
-            val ctx = it.context()
-            val scope = ctx.contextScope
-            if (scope != null) {
-                logger.log("preparing scope $scope")
-                instanceResolver.createContext(scope)
-            }
-            ctx.provided.forEach { beanRegistry.declare<Any>(it) }
+    fun build(modules: Collection<Module>): Koin {
+        modules.forEach { module ->
+            registerDefinitions(module())
         }
 
-        return koinContext
+        logger.log("[modules] loaded ${beanRegistry.definitions.size} definitions")
+        return this
     }
 
     /**
-     * load given module instances into current koin context
+     * Register context definitions & subContexts
      */
-    fun <T : Module> build(modules: List<T>): KoinContext {
-        logger.log("load module $modules ...")
+    private fun registerDefinitions(context: Context, parentContext: Context? = null) {
+        // Create or reuse getScopeForDefinition context
+        val scope = beanRegistry.findOrCreateScope(context.name, parentContext?.name)
 
-        val koinContext = KoinContext(beanRegistry, propertyResolver, instanceResolver)
-        modules.forEach {
-            it.koinContext = koinContext
-            val ctx = it.context()
-            val scope = ctx.contextScope
-            if (scope != null) {
-                logger.log("preparing scope $scope")
-                instanceResolver.createContext(scope)
-            }
-            ctx.provided.forEach { beanRegistry.declare<Any>(it) }
+        // Add definitions
+        context.definitions.forEach { definition ->
+            beanRegistry.declare(definition, scope)
         }
 
-        return koinContext
+        // Check sub contexts
+        context.subContexts.forEach { subContext -> registerDefinitions(subContext, context) }
     }
 
-    /**
-     * load directly Koin context with no modules
-     */
-    fun build(): KoinContext = KoinContext(beanRegistry, propertyResolver, instanceResolver)
+    companion object {
+        /**
+         * Koin Logger
+         */
+        var logger: Logger = PrintLogger()
+    }
 }
