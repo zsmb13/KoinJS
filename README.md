@@ -20,6 +20,10 @@ dependencies {
 }
 ```
 
+### Documentation
+
+Please refer to the original library's [readme](https://github.com/Ekito/koin/blob/5e9896e8af64adad6540e686bf5e3f852f8ae9ea/README.md), wiki / website for documentation.
+
 ### Tests
 
 Tests have been ported from the original library, and they use Kotlin-test and mocha. You can run them with the `gradlew test` command.
