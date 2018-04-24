@@ -16,7 +16,7 @@ Then just add the dependency:
 
 ```groovy
 dependencies {
-    compile "co.zsmb:koinjs:0.1.2"
+    compile "co.zsmb:koinjs:0.9.1"
 }
 ```
 
